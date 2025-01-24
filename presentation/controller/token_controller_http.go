@@ -28,7 +28,7 @@ func (c *TokenControllerHttp) SetAllRoutes() {
 		w.Header().Set("Content-Type", "application/json")
 		token, _ := c.useCasesFactory.NewGenerateTokenUseCase().Execute(usecases.GenerateTokenInput{})
 
-		if err := json.NewEncoder(w).Encode(token.Token); err != nil {
+		if err := json.NewEncoder(w).Encode(token); err != nil {
 			http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 		}
 	})

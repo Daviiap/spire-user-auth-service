@@ -10,7 +10,7 @@ import (
 type GenerateTokenInput struct{}
 
 type GenerateTokenOutput struct {
-	Token domain.Token
+	Token string `json:"token"`
 }
 
 type GenerateTokenUseCase struct {
@@ -31,7 +31,7 @@ func (uc *GenerateTokenUseCase) Execute(input GenerateTokenInput) (GenerateToken
 
 	(*uc.repository).Save(token)
 
-	return GenerateTokenOutput{Token: token}, nil
+	return GenerateTokenOutput{Token: token.Value}, nil
 }
 
 func generateRandomToken(length int) string {
