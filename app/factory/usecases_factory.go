@@ -16,3 +16,7 @@ func NewUseCasesFactory(tokenRepository *repository.TokenRepository) *UseCasesFa
 func (f *UseCasesFactory) NewGenerateTokenUseCase() usecases.UseCase[usecases.GenerateTokenInput, usecases.GenerateTokenOutput] {
 	return usecases.NewGenerateTokenUseCase(f.tokenRepository)
 }
+
+func (f *UseCasesFactory) NewValidateTokenUseCase() usecases.UseCase[usecases.ValidateTokenInput, usecases.ValidateTokenOutput] {
+	return usecases.NewValidateTokenUseCase(f.tokenRepository)
+}
