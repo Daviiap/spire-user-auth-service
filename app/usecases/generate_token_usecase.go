@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"math/rand"
-	"time"
+	"crypto/rand"
+	"encoding/hex"
 	"user_auth_service/domain"
 	"user_auth_service/domain/repository"
 )
@@ -23,7 +23,11 @@ func NewGenerateTokenUseCase(repository *repository.TokenRepository) UseCase[Gen
 }
 
 func (uc *GenerateTokenUseCase) Execute(input GenerateTokenInput) (GenerateTokenOutput, error) {
-	tokenValue := generateRandomToken(32)
+	tokenValue, err := generateRandomToken()
+	if err != nil {
+		return GenerateTokenOutput{}, err
+	}
+
 	token := domain.Token{
 		Value:   tokenValue,
 		IsValid: true,
@@ -34,13 +38,13 @@ func (uc *GenerateTokenUseCase) Execute(input GenerateTokenInput) (GenerateToken
 	return GenerateTokenOutput{Token: token.Value}, nil
 }
 
-func generateRandomToken(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	token := make([]byte, length)
-	for i := range token {
-		token[i] = charset[seededRand.Intn(len(charset))]
+func generateRandomToken() (string, error) {
+	tokenBytes := make([]byte, 32)
+	_, err := rand.Read(tokenBytes)
+	if err != nil {
+		return "", err
 	}
-	return string(token)
+	token := hex.EncodeToString(tokenBytes)
+
+	return token, nil
 }
