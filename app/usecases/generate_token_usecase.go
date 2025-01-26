@@ -23,7 +23,7 @@ func NewGenerateTokenUseCase(repository *repository.TokenRepository) UseCase[Gen
 }
 
 func (uc *GenerateTokenUseCase) Execute(input GenerateTokenInput) (GenerateTokenOutput, error) {
-	tokenValue, err := generateRandomToken()
+	tokenValue, err := uc.generateRandomToken()
 	if err != nil {
 		return GenerateTokenOutput{}, err
 	}
@@ -38,7 +38,7 @@ func (uc *GenerateTokenUseCase) Execute(input GenerateTokenInput) (GenerateToken
 	return GenerateTokenOutput{Token: token.Value}, nil
 }
 
-func generateRandomToken() (string, error) {
+func (uc *GenerateTokenUseCase) generateRandomToken() (string, error) {
 	tokenBytes := make([]byte, 32)
 	_, err := rand.Read(tokenBytes)
 	if err != nil {

@@ -18,7 +18,8 @@ func main() {
 	}
 
 	tokenRepository := repository_impl.NewTokenRepository()
-	useCaseFactory := factory.NewUseCasesFactory(&tokenRepository)
+	userRepository := repository_impl.NewUserRepository()
+	useCaseFactory := factory.NewUseCasesFactory(&tokenRepository, &userRepository)
 
 	port := os.Getenv("SERVER_PORT")
 	httpServer := infra.NewServer(port)

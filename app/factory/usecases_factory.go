@@ -7,10 +7,14 @@ import (
 
 type UseCasesFactory struct {
 	tokenRepository *repository.TokenRepository
+	userRepository  *repository.UserRepository
 }
 
-func NewUseCasesFactory(tokenRepository *repository.TokenRepository) *UseCasesFactory {
-	return &UseCasesFactory{tokenRepository: tokenRepository}
+func NewUseCasesFactory(tokenRepository *repository.TokenRepository, userRepository *repository.UserRepository) *UseCasesFactory {
+	return &UseCasesFactory{
+		userRepository:  userRepository,
+		tokenRepository: tokenRepository,
+	}
 }
 
 func (f *UseCasesFactory) NewGenerateTokenUseCase() usecases.UseCase[usecases.GenerateTokenInput, usecases.GenerateTokenOutput] {
@@ -22,5 +26,5 @@ func (f *UseCasesFactory) NewValidateTokenUseCase() usecases.UseCase[usecases.Va
 }
 
 func (f *UseCasesFactory) NewLoginUseCase() usecases.UseCase[usecases.LoginInput, usecases.LoginOutput] {
-	return usecases.NewLoginUseCase()
+	return usecases.NewLoginUseCase(f.userRepository)
 }
