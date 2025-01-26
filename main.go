@@ -22,9 +22,8 @@ func main() {
 
 	port := os.Getenv("SERVER_PORT")
 	httpServer := infra.NewServer(port)
-	tokenHttpController := controller.NewTokenControllerHttp(&httpServer, useCaseFactory)
-
-	tokenHttpController.SetAllRoutes()
+	controller.NewTokenControllerHttp(&httpServer, useCaseFactory).SetAllRoutes()
+	controller.NewLoginControllerHttp(&httpServer, useCaseFactory).SetAllRoutes()
 
 	log.Printf("Starting server on port %s", port)
 	httpServer.Start()

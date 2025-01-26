@@ -20,3 +20,7 @@ func (f *UseCasesFactory) NewGenerateTokenUseCase() usecases.UseCase[usecases.Ge
 func (f *UseCasesFactory) NewValidateTokenUseCase() usecases.UseCase[usecases.ValidateTokenInput, usecases.ValidateTokenOutput] {
 	return usecases.NewValidateTokenUseCase(f.tokenRepository)
 }
+
+func (f *UseCasesFactory) NewLoginUseCase() usecases.UseCase[usecases.LoginInput, usecases.LoginOutput] {
+	return usecases.NewLoginUseCase()
+}
