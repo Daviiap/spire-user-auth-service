@@ -23,13 +23,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tokenRepository := repository_impl.NewTokenRepository()
 	userRepository := repository_impl.NewUserRepository(db)
-	useCaseFactory := factory.NewUseCasesFactory(&tokenRepository, &userRepository)
+	useCaseFactory := factory.NewUseCasesFactory(&userRepository)
 
 	port := os.Getenv("SERVER_PORT")
 	httpServer := infra.NewServer(port)
-	controller.NewTokenControllerHttp(&httpServer, useCaseFactory).SetAllRoutes()
 	controller.NewLoginControllerHttp(&httpServer, useCaseFactory).SetAllRoutes()
 
 	log.Printf("Starting server on port %s", port)
