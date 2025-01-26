@@ -40,8 +40,13 @@ func (c *LoginControllerHttp) SetAllRoutes() {
 		})
 
 		if err != nil {
-			log.Printf("Error validating token: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "Error validating token", http.StatusInternalServerError)
+			return
+		}
+
+		if output.JWT == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(json.RawMessage(`{"message": "Invalid credentials"}`))
 			return
 		}
 

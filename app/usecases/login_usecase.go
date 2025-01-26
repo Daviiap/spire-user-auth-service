@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"user_auth_service/domain/repository"
 	"user_auth_service/utils"
 )
@@ -33,7 +32,7 @@ func (uc *LoginUseCase) Execute(input LoginInput) (LoginOutput, error) {
 	}
 
 	if !user.IsValidPassword(input.Password) {
-		return LoginOutput{}, errors.New("invalid password")
+		return LoginOutput{}, nil
 	}
 
 	token, err := utils.GenerateToken(utils.UserInfo{
