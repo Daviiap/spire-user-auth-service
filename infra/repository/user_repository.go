@@ -1,63 +1,79 @@
 package infra
 
 import (
+	"database/sql"
 	"user_auth_service/domain"
 	repository "user_auth_service/domain/repository"
 )
 
 type userRepository struct {
 	repository.UserRepository
-	users []domain.User
+	db *sql.DB
 }
 
-func NewUserRepository() repository.UserRepository {
-	user := domain.NewUser("jonh_doe", "john.doe@example.com", "ACME Inc.", "password")
-	return &userRepository{
-		users: []domain.User{
-			*user,
-		},
+func NewUserRepository(db *sql.DB) repository.UserRepository {
+	repo := &userRepository{
+		db: db,
 	}
+
+	repo.Save(*domain.NewUser("jonh_doe", "john@example.com", "ACME Inc.", "password"))
+
+	return repo
 }
 
 func (r *userRepository) Save(user domain.User) error {
-	r.users = append(r.users, user)
+	_, err := r.db.Exec(`INSERT INTO users.User (id, name, email, organization, password) VALUES ($1, $2, $3, $4, $5)`,
+		user.GetID(), user.GetName(), user.GetEmail(), user.GetOrganization(), user.GetPassword())
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (r *userRepository) Get(userID string) (domain.User, error) {
-	for _, user := range r.users {
-		if user.GetID() == userID {
-			return user, nil
-		}
+	result, err := r.db.Query(`SELECT id, name, email, organization, password FROM users.User WHERE id = $1`, userID)
+	if err != nil {
+		return domain.User{}, err
 	}
-	return domain.User{}, nil
+	defer result.Close()
+
+	if !result.Next() {
+		return domain.User{}, nil
+	}
+
+	var user domain.User
+	err = result.Scan(&user.ID, &user.Name, &user.Email, &user.Organization, &user.Password)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
 }
 
 func (r *userRepository) GetByName(userName string) (domain.User, error) {
-	for _, user := range r.users {
-		if user.GetName() == userName {
-			return user, nil
-		}
+	result, err := r.db.Query(`SELECT id, name, email, organization, password FROM users.User WHERE name = $1`, userName)
+	if err != nil {
+		return domain.User{}, err
 	}
-	return domain.User{}, nil
+	defer result.Close()
+
+	if !result.Next() {
+		return domain.User{}, nil
+	}
+
+	var user domain.User
+	err = result.Scan(&user.ID, &user.Name, &user.Email, &user.Organization, &user.Password)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
 }
 
 func (r *userRepository) Delete(user domain.User) error {
-	for i, u := range r.users {
-		if u.GetID() == user.GetID() {
-			r.users = append(r.users[:i], r.users[i+1:]...)
-			return nil
-		}
-	}
 	return nil
 }
 
 func (r *userRepository) Update(user domain.User) error {
-	for i, u := range r.users {
-		if u.GetID() == user.GetID() {
-			r.users[i] = user
-			return nil
-		}
-	}
 	return nil
 }

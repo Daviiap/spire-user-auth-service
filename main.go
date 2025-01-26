@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"user_auth_service/app/factory"
+	infrastructure "user_auth_service/infra"
 	infra "user_auth_service/infra/http"
 	repository_impl "user_auth_service/infra/repository"
 	"user_auth_service/presentation/controller"
@@ -17,8 +18,13 @@ func main() {
 		log.Printf("No .env file found, proceeding with system environment variables.")
 	}
 
+	db, err := infrastructure.NewDB(os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	tokenRepository := repository_impl.NewTokenRepository()
-	userRepository := repository_impl.NewUserRepository()
+	userRepository := repository_impl.NewUserRepository(db)
 	useCaseFactory := factory.NewUseCasesFactory(&tokenRepository, &userRepository)
 
 	port := os.Getenv("SERVER_PORT")

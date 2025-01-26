@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -13,7 +14,7 @@ type UserInfo struct {
 	Organization string
 }
 
-var jwtSecret = []byte("your_secret_key")
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 func GenerateToken(userInfo UserInfo) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

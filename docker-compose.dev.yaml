@@ -1,22 +1,4 @@
 services:
-  user_auth_service:
-    build: .
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
-    environment:
-      - SERVER_PORT
-      - DB_HOST
-      - DB_PORT
-      - DB_USER
-      - DB_PASSWORD
-      - DB_NAME
-      - JWT_SECRET
-    depends_on:
-      postgres:
-        condition: service_healthy
-      flyway:
-        condition: service_completed_successfully
-
   flyway:
     image: flyway/flyway
     command: migrate -schemas=users

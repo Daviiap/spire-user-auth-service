@@ -31,4 +31,10 @@ compose-up-build:
 compose-down:
 	docker compose down
 
-.PHONY: all build run test clean docker compose-up compose-up-build compose-down
+create_migration:
+	./scripts/create_migration.sh
+
+migrate:
+	./scripts/migrate.sh
+
+.PHONY: all build run test clean docker compose-up compose-up-build compose-down create_migration migrate

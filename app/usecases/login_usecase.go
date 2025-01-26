@@ -28,7 +28,7 @@ func NewLoginUseCase(repository *repository.UserRepository) UseCase[LoginInput, 
 
 func (uc *LoginUseCase) Execute(input LoginInput) (LoginOutput, error) {
 	user, err := (*uc.repository).GetByName(input.User)
-	if err != nil {
+	if err != nil || user.GetID() == "" {
 		return LoginOutput{}, err
 	}
 
